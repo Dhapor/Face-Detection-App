@@ -1,6 +1,6 @@
 import cv2
 import streamlit as st
->
+
 st.markdown("<h1 style = 'color: #FFACAC'>FACE DETECTION APPLICATION</h1> ", unsafe_allow_html = True)
 st.markdown("<h6 style = 'top_margin: 0rem; color: #F2921D'>Built by datapsalm</h6>", unsafe_allow_html = True)
 
