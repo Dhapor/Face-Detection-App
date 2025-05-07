@@ -10,7 +10,7 @@ typing_extensions==4.8.0
 virtualenv==20.24.6
 xgboost==2.0.2
 opencv-python-headless==4.6.0.66
-torch==2.0.1
+torch
 mediapipe==0.10.2
 Pillow==9.5.0
 streamlit-webrtc==0.42.1
