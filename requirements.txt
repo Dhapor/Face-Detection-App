@@ -9,6 +9,8 @@ seaborn==0.13.0
 typing_extensions==4.8.0
 virtualenv==20.24.6
 xgboost==2.0.2
+opencv-python
+streamlit-webrtc
 
 
 
