@@ -1,41 +1,39 @@
 import cv2
-import streamlit as st
-import torch
 import av
 import mediapipe as mp
+import streamlit as st
 from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
 
-# Load YOLOv5 model (small version for speed, change to 'yolov5m', 'yolov5l' for more accuracy)
-model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+# Load Haar cascade for face detection
+face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
-# Initialize MediaPipe Hands for palm detection
+# Initialize MediaPipe Hands
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(min_detection_confidence=0.7)
 
 # UI
-st.markdown("<h1 style='color: #FFACAC'>Live Face & Palm Detection with YOLOv5</h1>", unsafe_allow_html=True)
-st.markdown("<h6 style='color: #F2921D'>Built by datapsalm using YOLOv5 & MediaPipe</h6>", unsafe_allow_html=True)
+st.markdown("<h1 style='color: #FFACAC'>Live Face & Palm Detection</h1>", unsafe_allow_html=True)
+st.markdown("<h6 style='color: #F2921D'>Built by datapsalm using Viola-Jones & MediaPipe</h6>", unsafe_allow_html=True)
 st.markdown("<hr><br>", unsafe_allow_html=True)
 
-# Video processor class with YOLOv5 for face and palm detection
+# Video processor class
 class FacePalmDetector(VideoTransformerBase):
     def transform(self, frame):
         img = frame.to_ndarray(format="bgr24")
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        # Face detection
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
+        for (x, y, w, h) in faces:
+            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 255), 2)
+            cv2.putText(img, "Face", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2)
+
+        # Palm detection using MediaPipe
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        
-        # Perform YOLOv5 object detection
-        results = model(img_rgb)
-        
-        # Annotate detected objects (face, palm, etc.)
-        results.render()  # Render the bounding boxes on the image
-        
-        # Display the results (bounding boxes and labels)
-        img_rgb = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
-        
-        # Detect palm using MediaPipe if YOLOv5 misses it
-        palm_results = hands.process(img_rgb)
-        if palm_results.multi_hand_landmarks:
-            for hand_landmarks in palm_results.multi_hand_landmarks:
+        results = hands.process(img_rgb)
+        if results.multi_hand_landmarks:
+            for hand_landmarks in results.multi_hand_landmarks:
+                # Get bounding box from landmarks
                 h, w, _ = img.shape
                 x_coords = [int(lm.x * w) for lm in hand_landmarks.landmark]
                 y_coords = [int(lm.y * h) for lm in hand_landmarks.landmark]
