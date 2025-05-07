@@ -16,14 +16,12 @@ st.markdown("""
     <style>
         .header {
             font-size: 40px;
-            color: #FF5733;
             font-weight: bold;
             text-align: center;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
         }
         .subheader {
             font-size: 20px;
-            color: #F2921D;
             font-style: italic;
             text-align: center;
             margin-bottom: 20px;
