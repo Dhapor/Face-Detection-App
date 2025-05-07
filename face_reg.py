@@ -78,6 +78,9 @@ def detect_fingers(hand_landmarks):
 class FacePalmGestureDetector(VideoTransformerBase):
     def transform(self, frame):
         img = frame.to_ndarray(format="bgr24")
+
+        # Flip image horizontally to fix mirrored view
+        img = cv2.flip(img, 1)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         # Face detection
