@@ -14,3 +14,4 @@ torch==2.0.1
 mediapipe==0.10.2
 Pillow==9.5.0
 streamlit-webrtc==0.42.1
+rich==13.3.1  
