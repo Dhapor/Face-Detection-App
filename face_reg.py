@@ -12,8 +12,8 @@ mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(min_detection_confidence=0.7)
 
 # UI
-st.markdown("<h1 style='color: #FFACAC'>Live Face & Palm Detection</h1>", unsafe_allow_html=True)
-st.markdown("<h6 style='color: #F2921D'>Built by datapsalm using Viola-Jones & MediaPipe</h6>", unsafe_allow_html=True)
+st.markdown("<h1>Live Face & Palm Detection</h1>", unsafe_allow_html=True)
+st.markdown("<h6>Built by datapsalm using Viola-Jones & MediaPipe</h6>", unsafe_allow_html=True)
 st.markdown("<hr><br>", unsafe_allow_html=True)
 
 # Video processor class
