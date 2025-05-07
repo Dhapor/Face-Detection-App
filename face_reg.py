@@ -11,10 +11,58 @@ face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(min_detection_confidence=0.7)
 
-# UI
-st.markdown("<h1>Live Face & Palm Detection</h1>", unsafe_allow_html=True)
-st.markdown("<h6>Built by datapsalm using Viola-Jones & MediaPipe</h6>", unsafe_allow_html=True)
-st.markdown("<hr><br>", unsafe_allow_html=True)
+# UI Styling
+st.markdown("""
+    <style>
+        .header {
+            font-size: 40px;
+            color: #FF5733;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        .subheader {
+            font-size: 20px;
+            color: #F2921D;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .description {
+            color: #777;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .frame-container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fafafa;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .button {
+            background-color: #FF5733;
+            color: white;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background-color: #F2921D;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# UI Content
+st.markdown("<div class='header'>Live Face & Palm Detection</div>", unsafe_allow_html=True)
+st.markdown("<div class='subheader'>Built by datapsalm using Viola-Jones & MediaPipe</div>", unsafe_allow_html=True)
+st.markdown("<div class='description'>This app detects faces and palms in real-time using your webcam!</div>", unsafe_allow_html=True)
 
 # Video processor class
 class FacePalmDetector(VideoTransformerBase):
@@ -47,3 +95,8 @@ class FacePalmDetector(VideoTransformerBase):
 
 # Launch Streamlit WebRTC streamer
 webrtc_streamer(key="face-palm", video_processor_factory=FacePalmDetector)
+
+# Add a footer with a cool message
+st.markdown("<hr>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: center; font-size: 18px; color: #888;'>Powered by Streamlit and MediaPipe | datapsalm 2025</div>", unsafe_allow_html=True)
+
