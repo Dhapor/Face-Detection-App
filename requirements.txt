@@ -11,6 +11,4 @@ virtualenv==20.24.6
 xgboost==2.0.2
 opencv-python
 streamlit-webrtc
-
-
-
+mediapipe
