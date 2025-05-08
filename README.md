@@ -16,13 +16,4 @@ This project utilizes **OpenCV**, **MediaPipe**, and **Streamlit** to build a re
 - **MediaPipe**: For real-time hand gesture recognition.
 - **Streamlit**: For creating the user interface and real-time video streaming.
 
-## Setup Instructions
 
-Follow these steps to run the app on your local machine.
-
-### 1. Clone the Repository
-
-Clone this repository to your local machine:
-```bash
-git clone https://github.com/yourusername/face-palm-gesture-recognition.git
-cd face-palm-gesture-recognition
