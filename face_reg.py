@@ -12,32 +12,70 @@ mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(min_detection_confidence=0.7)
 mp_drawing = mp.solutions.drawing_utils
 
-# UI Styling
-st.markdown("""
-    <style>
-        .header {
-            font-size: 40px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .subheader {
-            font-size: 20px;
-            font-style: italic;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .description {
-            font-size: 18px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-    </style>
-""", unsafe_allow_html=True)
+# --- Page config and style ---
+st.set_page_config(
+    page_title="Face & Gesture Detector",
+    page_icon="🖐️👤",
+    layout="centered",
+)
 
-# UI Content
-st.markdown("<div class='header'>Live Face, Palm & Gesture Recognition</div>", unsafe_allow_html=True)
-st.markdown("<div class='subheader'>Built by datapsalm using Viola-Jones & MediaPipe</div>", unsafe_allow_html=True)
-st.markdown("<div class='description'>Detects faces and hand gestures in real-time!</div>", unsafe_allow_html=True)
+# Custom CSS for better styling
+st.markdown(
+    """
+    <style>
+    /* General body font and background */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f7f9fc;
+    }
+
+    /* Title style */
+    .title {
+        font-size: 3rem;
+        font-weight: 700;
+        text-align: center;
+        color: #0366d6;
+        margin-bottom: 0;
+    }
+
+    /* Subtitle style */
+    .subtitle {
+        font-size: 1.25rem;
+        text-align: center;
+        font-style: italic;
+        color: #444;
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    /* Description style */
+    .description {
+        font-size: 1rem;
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+
+    /* Footer style */
+    .footer {
+        text-align: center;
+        font-size: 0.85rem;
+        color: #999;
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 1px solid #ddd;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Centered header content with columns
+col1, col2, col3 = st.columns([1, 3, 1])
+with col2:
+    st.markdown('<h1 class="title">Live Face & Gesture Recognition 🖐️👤</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">Powered by Viola-Jones & MediaPipe</p>', unsafe_allow_html=True)
+    st.markdown('<p class="description">Detect faces and hand gestures in real-time, right from your browser!</p>', unsafe_allow_html=True)
 
 # Finger gesture mapping
 def get_gesture(fingers):
@@ -74,22 +112,23 @@ def detect_fingers(hand_landmarks):
 
     return fingers
 
-# Video processor
+# Video processor class
 class FacePalmGestureDetector(VideoTransformerBase):
     def transform(self, frame):
         img = frame.to_ndarray(format="bgr24")
 
-        # Flip image horizontally to fix mirrored view
+        # Flip image horizontally (mirror)
         img = cv2.flip(img, 1)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        # Face detection
+        # Detect faces
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
         for (x, y, w, h) in faces:
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 255), 2)
-            cv2.putText(img, "Face", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2)
+            cv2.putText(img, "Face", (x, y - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2)
 
-        # Hand detection
+        # Hand detection via MediaPipe
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         results = hands.process(img_rgb)
 
@@ -103,21 +142,30 @@ class FacePalmGestureDetector(VideoTransformerBase):
                 x_min, x_max = min(x_coords), max(x_coords)
                 y_min, y_max = min(y_coords), max(y_coords)
 
-                # Draw box
                 cv2.rectangle(img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
 
-                # Get finger states and gesture
                 fingers = detect_fingers(hand_landmarks)
                 gesture = get_gesture(fingers)
 
-                # Display gesture
-                cv2.putText(img, gesture, (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+                cv2.putText(img, gesture, (x_min, y_min - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
 
         return img
 
-# Launch the streamer
-webrtc_streamer(key="face-gesture", video_processor_factory=FacePalmGestureDetector)
+# Start webcam streamer with async processing for smoothness
+webrtc_streamer(
+    key="face-palm-gesture",
+    video_processor_factory=FacePalmGestureDetector,
+    media_stream_constraints={"video": True, "audio": False},
+    async_processing=True,
+)
 
-# Footer
-st.markdown("<hr>", unsafe_allow_html=True)
-st.markdown("<div style='text-align: center; font-size: 18px; color: #888;'>Powered by Streamlit and MediaPipe | datapsalm 2025</div>", unsafe_allow_html=True)
+# Footer section
+st.markdown(
+    """
+    <div class="footer">
+        &copy; 2025 datapsalm &nbsp;|&nbsp; Built with Streamlit & MediaPipe &nbsp;|&nbsp; <a href="https://github.com/Dhapor" target="_blank">GitHub</a>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
